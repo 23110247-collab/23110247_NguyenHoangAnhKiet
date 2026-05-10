@@ -13,7 +13,15 @@ export default (sequelize, DataTypes) => {
         as: "profile",
       });
 
+      User.hasMany(models.OtpVerification, {
+        foreignKey: "user_id",
+        as: "otpVerifications",
+      });
 
+      User.hasMany(models.RefreshToken, {
+        foreignKey: "user_id",
+        as: "refreshTokens",
+      });
     }
   }
 
