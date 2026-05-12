@@ -1,6 +1,10 @@
-import React, { forwardRef } from 'react';
+import { forwardRef, ComponentPropsWithoutRef } from 'react';
 
-export const Checkbox = forwardRef(({ label, id, className = '', ...props }, ref) => {
+export interface CheckboxProps extends ComponentPropsWithoutRef<'input'> {
+  label?: string;
+}
+
+export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({ label, id, className = '', ...props }, ref) => {
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
       <input

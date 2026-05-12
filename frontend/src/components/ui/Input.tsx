@@ -1,6 +1,10 @@
-import React, { forwardRef } from 'react';
+import { forwardRef, ComponentPropsWithoutRef } from 'react';
 
-export const Input = forwardRef(({ label, id, className = '', ...props }, ref) => {
+export interface InputProps extends ComponentPropsWithoutRef<'input'> {
+  label?: string;
+}
+
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ label, id, className = '', ...props }, ref) => {
   return (
     <div className={`flex flex-col ${className}`}>
       {label && (
