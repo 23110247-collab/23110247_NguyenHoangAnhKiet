@@ -52,6 +52,10 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      view_count: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
       rating: {
         type: DataTypes.DECIMAL(3, 2),
         defaultValue: 0,

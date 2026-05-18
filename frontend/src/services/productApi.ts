@@ -67,8 +67,13 @@ export const productApi = {
   },
 
   // Get best-selling products
-  getBestSellingProducts: (limit = 8) => {
+  getBestSellingProducts: (limit = 10) => {
     return axiosClient.get(`/products/best-selling?limit=${limit}`);
+  },
+
+  // Get most-viewed products
+  getMostViewedProducts: (limit = 10) => {
+    return axiosClient.get(`/products/most-viewed?limit=${limit}`);
   },
 
   // Get all categories

@@ -9,6 +9,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import Profile from "@/pages/Profile";
 import Home from "@/pages/Home";
 import Products from "@/pages/Products";
+import CategoryProducts from "@/pages/CategoryProducts";
 import ProductDetail from "@/pages/ProductDetail";
 
 export const getRoutes = (): RouteObject[] => {
@@ -26,6 +27,10 @@ export const getRoutes = (): RouteObject[] => {
         {
           path: "products",
           element: <Products />,
+        },
+        {
+          path: "category-products",
+          element: <CategoryProducts />,
         },
         {
           path: "products/:id",

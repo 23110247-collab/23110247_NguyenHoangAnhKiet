@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import productApi from "../services/productApi";
 import ProductCard from "../components/ui/ProductCard";
+import HorizontalPaginationCarousel from "../components/ui/HorizontalPaginationCarousel";
 
 interface Product {
   id: number;
@@ -25,23 +26,26 @@ export const Home = () => {
   const [newProducts, setNewProducts] = useState<Product[]>([]);
   const [promotionalProducts, setPromotionalProducts] = useState<Product[]>([]);
   const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
+  const [mostViewedProducts, setMostViewedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const [featured, newProds, promo, bestSelling] = await Promise.all([
+        const [featured, newProds, promo, bestSelling, mostViewed] = await Promise.all([
           productApi.getFeaturedProducts(8),
           productApi.getNewProducts(8),
           productApi.getPromotionalProducts(8),
-          productApi.getBestSellingProducts(8),
+          productApi.getBestSellingProducts(10),
+          productApi.getMostViewedProducts(10),
         ]);
 
         setFeaturedProducts(featured.data?.data || []);
         setNewProducts(newProds.data?.data || []);
         setPromotionalProducts(promo.data?.data || []);
         setBestSellingProducts(bestSelling.data?.data || []);
+        setMostViewedProducts(mostViewed.data?.data || []);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -168,14 +172,47 @@ export const Home = () => {
           />
         </div>
 
-        {/* Best Selling Products */}
-        <div className="mb-20">
-          <ProductSection
-            title="🔥 Bán chạy nhất"
-            products={bestSellingProducts}
-            viewAllLink="/products?sort=sold_count&order=DESC"
-          />
-        </div>
+        {/* Best Selling Products Carousel */}
+        <section className="mb-20">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 border-b-4 border-black pb-4">
+            <div>
+              <span className="inline-block bg-[#d97736] text-white px-3 py-1 border-2 border-black text-xs font-black uppercase tracking-widest mb-3">
+                Top 10 Bán chạy
+              </span>
+              <h2 className="text-4xl font-black font-serif uppercase tracking-tight text-black">
+                🔥 Sản phẩm bán chạy nhất
+              </h2>
+            </div>
+            <Link
+              to="/products?sort=sold_count&order=DESC"
+              className="mt-4 sm:mt-0 inline-block border-2 border-black bg-white px-6 py-2 text-xs font-black uppercase tracking-wider hover:bg-black hover:text-white transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:translate-x-1"
+            >
+              Xem tất cả →
+            </Link>
+          </div>
+          <HorizontalPaginationCarousel products={bestSellingProducts} />
+        </section>
+
+        {/* Most Viewed Products Carousel */}
+        <section className="mb-20">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 border-b-4 border-black pb-4">
+            <div>
+              <span className="inline-block bg-black text-white px-3 py-1 border-2 border-black text-xs font-black uppercase tracking-widest mb-3">
+                Top 10 Xem nhiều
+              </span>
+              <h2 className="text-4xl font-black font-serif uppercase tracking-tight text-black">
+                👁️ Sản phẩm xem nhiều nhất
+              </h2>
+            </div>
+            <Link
+              to="/category-products"
+              className="mt-4 sm:mt-0 inline-block border-2 border-black bg-white px-6 py-2 text-xs font-black uppercase tracking-wider hover:bg-black hover:text-white transition-all shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-y-1 active:translate-x-1"
+            >
+              Duyệt theo danh mục →
+            </Link>
+          </div>
+          <HorizontalPaginationCarousel products={mostViewedProducts} />
+        </section>
 
         {/* Featured Products */}
         <div className="mb-20">

@@ -21,6 +21,9 @@ router.get("/promotional", productController.getPromotionalProducts);
 // Get best-selling products
 router.get("/best-selling", productController.getBestSellingProducts);
 
+// Get most-viewed products
+router.get("/most-viewed", productController.getMostViewedProducts);
+
 // Get product by ID
 router.get("/:id", productController.getProductById);
 

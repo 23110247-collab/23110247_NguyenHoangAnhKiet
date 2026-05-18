@@ -90,6 +90,7 @@ export const productService = {
             "discount_percent",
             "stock_quantity",
             "sold_count",
+            "view_count",
             "rating",
             "is_new",
             "is_featured",
@@ -122,6 +123,12 @@ export const productService = {
   getProductById: (productId) => {
     return new Promise(async (resolve, reject) => {
       try {
+        // Increment view_count
+        await Product.increment("view_count", {
+          by: 1,
+          where: { id: productId },
+        });
+
         const product = await Product.findByPk(productId, {
           include: [
             {
@@ -145,6 +152,7 @@ export const productService = {
             "discount_percent",
             "stock_quantity",
             "sold_count",
+            "view_count",
             "rating",
             "is_new",
             "is_featured",
@@ -373,7 +381,7 @@ export const productService = {
   },
 
   // Get best-selling products
-  getBestSellingProducts: (limit = 8) => {
+  getBestSellingProducts: (limit = 10) => {
     return new Promise(async (resolve, reject) => {
       try {
         const products = await Product.findAll({
@@ -405,12 +413,61 @@ export const productService = {
             "discount_percent",
             "rating",
             "sold_count",
+            "view_count",
           ],
         });
 
         resolve({
           status: 200,
           message: "Best-selling products retrieved successfully",
+          data: products,
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+
+  // Get most-viewed products
+  getMostViewedProducts: (limit = 10) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const products = await Product.findAll({
+          where: {
+            status: "ACTIVE",
+          },
+          include: [
+            {
+              model: ProductImage,
+              as: "images",
+              where: { is_thumbnail: true },
+              required: false,
+              attributes: ["image_url", "alt_text"],
+              limit: 1,
+            },
+            {
+              model: ProductCategory,
+              as: "category",
+              attributes: ["id", "name"],
+            },
+          ],
+          limit,
+          order: [["view_count", "DESC"]],
+          attributes: [
+            "id",
+            "name",
+            "price",
+            "discount_price",
+            "discount_percent",
+            "rating",
+            "sold_count",
+            "view_count",
+          ],
+        });
+
+        resolve({
+          status: 200,
+          message: "Most-viewed products retrieved successfully",
           data: products,
         });
       } catch (error) {

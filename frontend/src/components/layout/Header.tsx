@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ShoppingBag, ShoppingCart, LogIn, Search } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { useState } from "react";
@@ -6,7 +6,28 @@ import { useState } from "react";
 const Header = () => {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+
+  const currentPath = location.pathname;
+  const currentSearch = location.search;
+
+  // Helper to determine if a link is active
+  const isActive = (path: string, searchParam?: string) => {
+    if (searchParam) {
+      return currentPath === path && currentSearch.includes(searchParam);
+    }
+    if (path === "/products") {
+      // General catalog: only active when no other specific parameters are in URL
+      return (
+        currentPath === "/products" &&
+        !currentSearch.includes("is_promotional=true") &&
+        !currentSearch.includes("is_new=true") &&
+        !currentSearch.includes("sort=sold_count")
+      );
+    }
+    return currentPath === path;
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,25 +53,51 @@ const Header = () => {
             <nav className="hidden lg:flex space-x-10">
               <Link
                 to="/products"
-                className="text-xs font-black uppercase tracking-[0.2em] text-black hover:text-primary transition-colors"
+                className={`text-xs font-black uppercase tracking-[0.2em] transition-colors ${
+                  isActive("/products")
+                    ? "text-[#d97736] underline decoration-2 underline-offset-8"
+                    : "text-black hover:text-[#d97736]"
+                }`}
               >
                 Catalog
               </Link>
               <Link
+                to="/category-products"
+                className={`text-xs font-black uppercase tracking-[0.2em] transition-colors ${
+                  isActive("/category-products")
+                    ? "text-[#d97736] underline decoration-2 underline-offset-8"
+                    : "text-black hover:text-[#d97736]"
+                }`}
+              >
+                Categories
+              </Link>
+              <Link
                 to="/products?sort=sold_count&order=DESC"
-                className="text-xs font-black uppercase tracking-[0.2em] text-black hover:text-primary transition-colors"
+                className={`text-xs font-black uppercase tracking-[0.2em] transition-colors ${
+                  isActive("/products", "sort=sold_count")
+                    ? "text-[#d97736] underline decoration-2 underline-offset-8"
+                    : "text-black hover:text-[#d97736]"
+                }`}
               >
                 Best Sellers
               </Link>
               <Link
                 to="/products?is_promotional=true"
-                className="text-xs font-black uppercase tracking-[0.2em] text-[#d97736] hover:text-black transition-colors"
+                className={`text-xs font-black uppercase tracking-[0.2em] transition-colors ${
+                  isActive("/products", "is_promotional=true")
+                    ? "text-[#d97736] underline decoration-2 underline-offset-8"
+                    : "text-black hover:text-[#d97736]"
+                }`}
               >
                 Sale Off
               </Link>
               <Link
                 to="/products?is_new=true"
-                className="text-xs font-black uppercase tracking-[0.2em] text-black hover:text-primary transition-colors"
+                className={`text-xs font-black uppercase tracking-[0.2em] transition-colors ${
+                  isActive("/products", "is_new=true")
+                    ? "text-[#d97736] underline decoration-2 underline-offset-8"
+                    : "text-black hover:text-[#d97736]"
+                }`}
               >
                 New In
               </Link>

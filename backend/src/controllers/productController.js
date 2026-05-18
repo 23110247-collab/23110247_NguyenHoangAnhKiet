@@ -105,11 +105,23 @@ export const productController = {
   // Get best-selling products
   getBestSellingProducts: async (req, res) => {
     try {
-      const limit = req.query.limit ? parseInt(req.query.limit) : 8;
+      const limit = req.query.limit ? parseInt(req.query.limit) : 10;
       const response = await productService.getBestSellingProducts(limit);
       return res.status(response.status).json(response);
     } catch (error) {
       console.error("Error in getBestSellingProducts:", error);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  },
+
+  // Get most-viewed products
+  getMostViewedProducts: async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+      const response = await productService.getMostViewedProducts(limit);
+      return res.status(response.status).json(response);
+    } catch (error) {
+      console.error("Error in getMostViewedProducts:", error);
       return res.status(500).json({ message: "Internal server error" });
     }
   },
